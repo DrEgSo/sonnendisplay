@@ -11,4 +11,9 @@ Zusätzlich können direkte Outputs oder TASMOTA-Schalter in Abhängigkeit vom L
 
 ![grafik](https://github.com/DrEgSo/sonnendisplay/assets/153096520/2330cb20-1d1c-412a-a243-dcc8832b8b18)
 
+
+![grafik](https://github.com/DrEgSo/sonnendisplay/assets/153096520/15d734fc-2142-400e-a5fb-04aca2283fc5)
+
 !Die go-E-Charger Unterstützung ist noch nicht fertiggestellt - mangels Testmöglichkeiten
+
+
