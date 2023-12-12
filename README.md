@@ -1,5 +1,5 @@
 ESP8266-Lösung zum Zugriff auf die API einer "Sonnenbatterie" 
-Anzeige der Werte auf einem OLED Display und Ladezustand über Ledzeile. 
+Anzeige der Werte auf einem OLED Display und Ladezustand über Neopixel-Ledzeile. 
 Ein einfacher Webserver zeigt die Werte ebenfalls.
 -
 Als Hardwarebasis wurde ein D-Duino verwendet. (Derzeit leider nicht mehr erhältlich)
