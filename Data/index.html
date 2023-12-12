@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang=de-DE>
+
+<head>
+ <meta content="text/html, text/css, text/javascript, text/xml"; charset="utf-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+ 
+ <title> Smarte Schalter für Hausbatterien </title>
+    <style>
+        a{
+            font-size: 20px;
+          }
+        * {
+            box-sizing: border-box;
+        }
+        hr {
+            width: 100%;
+            height: 0.1em;
+            margin: 0 auto;
+        }
+        body {
+            font-family: Arial;
+            padding: 10px;
+            background: #f1f1f1;
+        }
+        
+        .header {
+            padding: 2px;
+            text-align: center;
+            background: white;
+        }
+        
+               
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+        
+        .topnav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        .time {
+            background-color: #baa;
+            width: 100%;
+            padding: 5px;
+        }
+        
+        .card {
+            background-color: white;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        .footer {
+            text-align: center;
+            background: #ddd;
+            margin-top: 20px;
+        }
+		.button {
+		  background-color: #888888;
+		  border: none;
+		  color: white;
+		  padding: 25px 32px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: block;
+		  font-size: 32px;
+		  margin: 8px 8px;
+		  cursor: pointer;
+		}
+		.button a {
+		
+		}
+        .panel {
+          padding: 0 8px;
+          background-color: white;
+          max-height: 0;
+          overflow: hidden;
+        }
+        .table {
+          width: 100%;
+          background-color: #fff0f0;
+        }
+		.mymeter {
+			width: 160px;
+			height:2em;	
+			display: block;
+		}
+		legende {
+			font-size: 12px;
+			color:white;
+		}
+		.c1 {
+			background-color: #e00000;
+			color:white;
+
+		}
+		.c2 {
+			background-color: #00e000;
+			color:white;
+		}
+		.c3 {
+			background-color: #6495ED;
+			color:white;
+		}
+		.c4 {
+			background-color: silver;
+			color:white;
+		}
+		.c5 {
+			background-color: black;
+			color:white;
+		}
+		.c6 {
+			background-color: #F0F0F0;
+			color:white;
+		}
+		
+    </style>
+</head>
+
+<body onload="pageInit();">
+	<noscript><h2>SmartPlug braucht JavaScript - bitte freigeben !</h2><br></noscript>
+    <div class="header" >
+        <h2><div id="headername">SoSmartSwitch</div></h2>
+    </div>
+    <div class="topnav">
+        <a href="">Hauptseite</a>
+		<a href="outconfig.html">Schaltausgänge</a>
+        <a href="config.html">Konfig</a>
+		<a href="update">Update</a>  
+        <a href="#" style="float:right"><div id="time"></div></a>
+    </div>
+	<div class="card">
+		<table>
+		<tr>
+			<th class="a"><span id="B1T">Ausgang1</span></th>
+			<th ><span id="B2T">Ausgang2</span></th>
+			<th ><span id="B3T">Ausgang3</span></th>
+			<th ><span id="B4T">Ausgang4</span></th>
+			<th ><span id="B5T">Ausgang5</span></th>
+			<th ><span id="B6T">Ausgang6</span></th>
+		</tr>
+		<tr>	
+			<td class="a"><input type="button" class="button" id="B1" value="0" ontouchstart="Bpress(1,0);" ontouchend="Brel(1,0);" onmousedown="Bpress(1,1);" onmouseup="Brel(1,1);" onclick="Btgl(1);"> </td>
+			<td class="a"><input type="button" class="button" id="B2" value="0" ontouchstart="Bpress(2,0);" ontouchend="Brel(2,0);" onmousedown="Bpress(2,1);" onmouseup="Brel(2,1);" onclick="Btgl(2);"> </td>
+			<td class="a"><input type="button" class="button" id="B3" value="0" ontouchstart="Bpress(3,0);" ontouchend="Brel(3,0);" onmousedown="Bpress(3,1);" onmouseup="Brel(3,1);" onclick="Btgl(3);"> </td>
+			<td class="a"><input type="button" class="button" id="B4" value="0" ontouchstart="Bpress(4,0);" ontouchend="Brel(4,0);" onmousedown="Bpress(4,1);" onmouseup="Brel(4,1);" onclick="Btgl(4);"> </td>
+			<td class="a"><input type="button" class="button" id="B5" value="0" ontouchstart="Bpress(5,0);" ontouchend="Brel(5,0);" onmousedown="Bpress(5,1);" onmouseup="Brel(5,1);" onclick="Btgl(5);"> </td>
+			<td class="a"><input type="button" class="button" id="B6" value="0" ontouchstart="Bpress(6,0);" ontouchend="Brel(6,0);" onmousedown="Bpress(6,1);" onmouseup="Brel(6,1);" onclick="Btgl(6);"> </td>
+		</tr>
+		<tr>
+			<th class="a"><span id="B1P"></span></th>
+			<th ><span id="B2P"></span></th>
+			<th ><span id="B3P"></span></th>
+			<th ><span id="B4P"></span></th>
+			<th ><span id="B5P"></span></th>
+			<th ><span id="B6P"></span></th>
+		</tr>
+		</table>	
+ 	</div>		
+  	<div class="card">
+		<h2>Überschuss &nbsp <span id="line0">0</span></h2>
+		<hr>
+		<table border="0" rules="none" >
+		<tr>
+			<td>Batterie: </td>
+			<td>
+				<meter class="mymeter" id="batterie" min="0" max="100" value="0">
+			</td>
+		</tr>
+			<td></td>
+			<td style="text-align: center">
+			<span id="line1" > -- </span>
+			</td>
+		</tr><tr>
+		  <td>Erzeugung </td>
+		  <td><span id="line2">xx</span></td>
+		</tr><tr>
+		  <td>Verbrauch </td>
+		  <td><span id ="line3">xx</span></td>
+		</tr><tr>
+		  <td>Batterieausgang &nbsp</td>
+		  <td><span id ="line4">xx</span></td>
+		</tr>
+		<tr>
+		<td style="text-align: center">Netz</td>
+		</tr>
+		<tr>
+		  <td>Einspeisung</td>
+		  <td><span id ="line5">xx</span></td>
+		</tr>
+		<tr>
+		  <td>Frequenz</td>
+		  <td><span id ="line6">xx</span></td>
+		</tr>
+		<tr>
+		  <td>Spannung</td>
+		  <td><span id ="line7">nn</span></td>
+		</tr><tr>
+		  <td></td>
+		  <td><span id ="line8"></span></td>
+		</tr><tr>
+		  <td></td>
+		  <td><span id ="line9"></span></td>
+		</tr><tr>
+		</table>
+    <div class="footer">
+        Version&nbsp <span id ="version"> _._</span>
+    </div>
+	<span class="legende">	
+		<span class="c1">Manuell Ein</span>&nbsp <span class="c2">Automatik Ein</span>&nbsp <span class="c3">Extern Ein</span>&nbsp 
+		<span class="c4">&nbsp &nbsp Aus &nbsp &nbsp </span>&nbsp <span class="c5">Extern Aus</span>&nbsp <span class="c6">&nbsp Inaktiv &nbsp </span> &nbsp &nbsp 
+	</span>
+</body>
+	
+<script type="text/javascript">
+
+var btn = document.getElementsByClassName("button");
+let anzoutputs = 0;
+
+aktOutNr = 1;
+bDisableButtonUpdate=true;
+bIgnoreClick=false;			//implizit = global
+var idx = 0;
+var idB,idO,idP;
+const xstate = [0,0,0,0,0,0];
+const xmode = [0,0,0,0,0,0];
+const xpower= [0,0,0,0,0,0];
+
+//-------------einmal nach dem Laden der Seite - steht im Kopf vom body
+function pageInit(){
+	getConfig();		// um den Namen der Box und Anzahl der Ausgänge zu lesen
+	getOutputNames();
+	getOutputData();
+	getBattData();
+	idB=setTimeout(getBattData,3000); 
+    idO=setTimeout(getOutputData,1600); 
+	idP=setInterval(pageUpdate, 750);
+	btn_init();
+}
+
+
+
+function chgOutput(i,x)
+{
+	var xhr = new XMLHttpRequest();
+	var url= "/outputchange?XNR="+i+"&X="+x; 
+//	console.log(url);
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+
+function Bpress(i,bMouse)
+{
+	aktOutNr=i;
+	start= new Date();
+}
+
+function Brel(i,bMouse)
+{
+	var now = new Date();
+	var time = now-start;
+	if (time >900){
+		getOutIP(aktOutNr);		//Ip Adr lesen und neue Seite öffnen
+		if(bMouse==1){
+			bIgnoreClick=true;
+		}
+	}
+}
+
+function getOutIP(i){
+	var xhr = new XMLHttpRequest();
+	var url = "/cmd?getoutip="+i; 
+	let idx=i-1;
+	xhr.open("GET", url, true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var info = JSON.parse(this.responseText);
+			let aktOutIP="";
+			if(info.hasOwnProperty("OUTIP")){
+				aktOutIP=info.OUTIP;
+			}
+			if(xmode[idx] !=0 && xstate[idx] < 128){			//nicht inaktiv und nicht linklost
+				let url="http://"+aktOutIP;
+//				console.log(url);
+				window.open(url,"_blank");
+			}
+		}
+	};
+	xhr.send();
+ };
+
+
+function Btgl(i)
+{
+	if(bIgnoreClick){
+		bIgnoreClick=false;
+		return;
+	}
+
+	var idx=i-1;
+	if(xmode[idx] > 0) {
+		var t = document.getElementById("B"+i);
+		if(t.value==0){
+		  chgOutput(i,1);
+		}
+		else if(t.value==1){
+		  chgOutput(i,0);
+		}
+	}
+	else {
+		alert("Ausgang "+i+" kann nicht geändert werden - passiv/inaktiv");
+	}
+	getOutputData();
+}
+
+
+function btn_init(){	  // Buttons wegblenden
+	  if(anzoutputs < 1) {
+		return;
+	  }				// warten bis gültige Anzahl Ausgänge empfangen
+	  var limit=Math.min(btn.length,anzoutputs);
+	  for (idx = 0; idx < limit; idx++) {
+	  }
+	  //restliche Ausgänge wegblenden
+	  for (;idx < btn.length;idx++){
+		var name = "B"+(idx+1);
+		document.getElementById(name).style.display = "none";
+		name = "B"+(idx+1)+"T";
+		document.getElementById(name).style.display = "none";
+	  }
+}  
+
+  
+function pageUpdate() {
+     var today = new Date();
+     var h = today.getHours();
+     var m = today.getMinutes();
+     var s = today.getSeconds();
+     m = formatTime(m);
+     s = formatTime(s);
+     document.getElementById('time').innerHTML =
+     h + ":" + m + ":" + s;
+	 if(bDisableButtonUpdate){
+		return;
+	}
+    //------------------------------Farbumschlag 
+    for (var i = 0; i < anzoutputs; i++) {
+		if(xmode[i] !=0){
+			let state = xstate[i] & ~"10000000";
+//			console.log(xstate[i]);
+//			console.log(state);
+			if(state == 1 || state ==5){
+				btn[i].value="1";
+				if(state==1 && xmode[i]==2){
+					btn[i].style.backgroundColor = "#00E000";
+				}
+				if(state==1 && xmode[i]==1){
+					btn[i].style.backgroundColor = "#E00000";
+				}
+				if(state==5){
+					btn[i].style.backgroundColor = "#6495ED";
+				}
+			}
+			else {
+				if(state==4){
+					btn[i].style.backgroundColor = "black";
+				}
+				if(state==0){
+					btn[i].style.backgroundColor = "silver";
+				}
+				btn[i].value="0";
+			}
+		}
+		else {
+			btn[i].style.backgroundColor = "#F1F1F1";
+			if(xstate[i] == 1 || xstate[i] ==5){
+				btn[i].value="1";
+			}
+			else {
+				btn[i].value="0";
+			}
+		}
+
+		if(xstate[i] >= 128 ){
+			btn[i].value="X";
+		}
+		
+		var name = "B"+(i+1)+"P";
+		if(xpower[i] != 0) {
+			document.getElementById(name).innerHTML=xpower[i]+" W";
+		}
+		else {
+			document.getElementById(name).innerHTML="";
+		}
+    }
+  };
+      
+  function formatTime(i) {
+   if (i < 10) {i = "0" + i};
+   return i;
+  };
+
+  
+  function getConfig(){
+	var xhr = new XMLHttpRequest();
+	var url_config = '/getconfig';   
+	
+	xhr.open("GET", url_config, true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var webinfo = JSON.parse(this.responseText);
+			document.getElementById("headername").innerHTML=webinfo.BOXNAME;
+			anzoutputs=webinfo.ANZOUTPUTS;
+			btn_init();
+		}
+	};
+	xhr.send();
+  };
+
+  function getOutputNames(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", '/outputnames', true);
+
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var outnames = JSON.parse(this.responseText);
+			document.getElementById("B1T").innerHTML=outnames.O1N;
+			document.getElementById("B2T").innerHTML=outnames.O2N;
+			document.getElementById("B3T").innerHTML=outnames.O3N;
+			document.getElementById("B4T").innerHTML=outnames.O4N;
+			document.getElementById("B5T").innerHTML=outnames.O5N;
+			document.getElementById("B6T").innerHTML=outnames.O6N;
+		}
+	};
+	xhr.send();
+  };
+
+
+  //--------------------------------------------------------------------------------
+  function getOutputData(){
+	var xhr = new XMLHttpRequest();
+	var url_outputData = '/outputdata';   
+	xhr.open("GET", url_outputData, true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var xData = JSON.parse(this.responseText);
+			anzoutputs=xData.ANZ;
+			xstate[0]=xData.A1Z;
+			xstate[1]=xData.A2Z;
+			xstate[2]=xData.A3Z;
+			xstate[3]=xData.A4Z;
+			xstate[4]=xData.A5Z;
+			xstate[5]=xData.A6Z;
+			xmode[0]=xData.A1M;
+			xmode[1]=xData.A2M;
+			xmode[2]=xData.A3M;
+			xmode[3]=xData.A4M;
+			xmode[4]=xData.A5M;
+			xmode[5]=xData.A6M;
+			xpower[0]=xData.A1P
+			xpower[1]=xData.A2P;
+			xpower[2]=xData.A3P;
+			xpower[3]=xData.A4P;
+			xpower[4]=xData.A5P;
+			xpower[5]=xData.A6P;
+			
+			bDisableButtonUpdate=false;
+			pageUpdate();
+		}
+		clearTimeout(idO);
+		idO=setTimeout(getOutputData,1000); 
+	};
+	xhr.send();
+  };
+
+  
+
+  
+  function getBattData(){
+  
+  var xhr = new XMLHttpRequest();
+  var url_BattData = '/battdata';
+  var iDiff;
+  xhr.open('GET', url_BattData, true);
+  xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200){
+		var battdata = JSON.parse(this.responseText);
+		if(battdata.hasOwnProperty("SOC")) {
+			document.getElementById("line1").innerHTML = battdata.SOC +" %";
+			document.getElementById("batterie").value = battdata.SOC;
+			document.getElementById("line2").innerHTML = battdata.PV +" W";
+			document.getElementById("line3").innerHTML = battdata.VB + " W";
+			document.getElementById("line4").innerHTML = battdata.BPWR + " W";
+	        document.getElementById("line5").innerHTML = battdata.GRID + "W";
+			document.getElementById("line6").innerHTML = Math.round(battdata.FAC*100)/100 +" Hz";   //zwei Nachkommastellen
+			document.getElementById("line7").innerHTML = battdata.VAC +" V";
+	//      document.getElementById("line8").innerHTML = battdata.line8;
+			document.getElementById("version").innerHTML = battdata.VERSION;			// Softwareversion eintragen
+			iDiff = battdata.PV - battdata.VB;
+			if (iDiff >= 0 ){
+				document.getElementById("line0").style.color = 'green';
+			} else {
+				document.getElementById("line0").style.color = 'red';
+			}
+			document.getElementById("line0").innerHTML = iDiff +" W";
+		}	
+		if(battdata.hasOwnProperty("ERR")){
+			document.getElementById("line9").innerHTML = battdata.ERR;
+			document.getElementById("line9").style.color = 'red';
+		}
+		else {
+			document.getElementById("line9").innerHTML = "";
+		}
+    }
+	clearTimeout(idB);
+	idB=setTimeout(getBattData,3000); 
+  };
+  xhr.send();
+  };
+  </script>
+</body>
+</html>

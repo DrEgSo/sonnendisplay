@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang=de-DE>
+
+<head>
+ <meta content="text/html, text/css, text/javascript, text/xml"; charset="utf-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+ <title> Smartes Relais  </title>
+    <style>
+        a{
+            font-size: 20px;
+          }
+        * {
+            box-sizing: border-box;
+        }
+        hr {
+            width: 100%;
+            height: 0.1em;
+            margin: 0 auto;
+        }
+        body {
+            font-family: Arial;
+            padding: 10px;
+            background: #f1f1f1;
+        }
+        
+        .header {
+            padding: 2px;
+            text-align: center;
+            background: white;
+        }
+        
+               
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+        
+        .topnav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        .time {
+            background-color: #baa;
+            width: 100%;
+            padding: 5px;
+        }
+        
+        .card {
+            background-color: white;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        .footer {
+            text-align: center;
+            background: #ddd;
+            margin-top: 20px;
+        }
+		.button {
+		  background-color: #888888;
+		  border: none;
+		  color: white;
+		  padding: 25px 32px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 32px;
+		  margin: 8px 8px;
+		  cursor: pointer;
+		}
+		.button a {
+		
+		}
+        .panel {
+          padding: 0 8px;
+          background-color: white;
+          max-height: 0;
+          overflow: hidden;
+        }
+        .table {
+          width: 100%;
+          background-color: #fff0f0;
+        }
+		.mymeter {
+			width: 160px;
+			height:2em;	
+			display: block;
+		}
+    </style>
+</head>
+
+<body onload="pageInit();">
+	<noscript>SmartPlug braucht JavaScript - bitte freigeben<br></noscript>
+    <div class="header" >
+        <h2><div id="headername">SoSmartSwitch</div></h2>
+    </div>
+    <div class="topnav">
+        <a href="">Hauptseite</a>
+        <a href="config.html">Konfig</a>
+        <a href="#" style="float:right"><div id="time"></div></a>
+    </div>
+  	<div class="card">
+		<h2>Überschuss &nbsp <span id="line0">0</span></h2>
+		<hr>
+		<table border="0" rules="none" >
+		<tr>
+			<td>Batterie: </td>
+			<td>
+				<meter class="mymeter" id="batterie" min="0" max="100" value="0">
+			</td>
+		</tr>
+			<td></td>
+			<td style="text-align: center">
+			<span id="line1" > -- </span>
+			</td>
+		</tr><tr>
+		  <td>Erzeugung </td>
+		  <td><span id="line2">xx</span></td>
+		</tr><tr>
+		  <td>Verbrauch </td>
+		  <td><span id ="line3">xx</span></td>
+		</tr><tr>
+		  <td>Batterieausgang </td>
+		  <td><span id ="line4">xx</span></td>
+		</tr>
+		<tr>
+		<td style="text-align: center">Netz</td>
+		</tr>
+		<tr>
+		  <td>Einspeisung</td>
+		  <td><span id ="line5">xx</span></td>
+		</tr>
+		<tr>
+		  <td>Frequenz</td>
+		  <td><span id ="line6">xx</span></td>
+		</tr><tr>
+		  <td>Spannung</td>
+		  <td><span id ="line7">nn</span></td>
+		</tr><tr>
+		  <td></td>
+		  <td><span id ="line8"></span></td>
+		</tr><tr>
+		  <td></td>
+		  <td><span id ="line9"></span></td>
+		</tr><tr>
+		</table>
+    <div class="footer">
+        <h4><a href="http://www.teseso.de" target="_blank"> Technik Service Sommer </a></h4>
+    </div>
+  
+<script type="text/javascript">
+
+
+//-------------einmal nach dem Laden der Seite
+function pageInit(){
+	getConfig();		// um den Namen der Box zu lesen
+	pageUpdate();
+}
+
+setInterval(pageUpdate, 500);
+  
+function pageUpdate() {
+     var t = new Date();
+     var h = t.getHours();
+     var m = t.getMinutes();
+     var s = t.getSeconds();
+     m = formTime(m);
+     s = formTime(s);
+     document.getElementById('time').innerHTML =
+     h + ":" + m + ":" + s;
+}	 
+
+function formTime(i) {
+   if (i < 10) {i = "0" + i};
+   return i;
+};
+
+  
+function getConfig(){
+	var xhr = new XMLHttpRequest();
+	var url = '/getconfig';   
+
+	xhr.open("GET", url, true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var webinfo = JSON.parse(this.responseText);
+			document.getElementById("headername").innerHTML=webinfo.BOXNAME;
+		}
+	};
+	xhr.send();
+};
+
+
+  setInterval(getBattData,2500); 
+  
+  function getBattData(){
+  
+  var xhr = new XMLHttpRequest();
+  var url_BattData = '/battdata';
+  var iDiff;
+  xhr.open('GET', url_BattData, true);
+  xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200){
+		var battdata = JSON.parse(this.responseText);
+		if(battdata.hasOwnProperty("SOC")) {
+			document.getElementById("line1").innerHTML = battdata.SOC +" %";
+			document.getElementById("batterie").value = battdata.SOC;
+			document.getElementById("line2").innerHTML = battdata.PV +" W";
+			document.getElementById("line3").innerHTML = battdata.VB + " W";
+			document.getElementById("line4").innerHTML = battdata.BPWR + " W";
+	        document.getElementById("line5").innerHTML = battdata.GRID + "W";
+			document.getElementById("line6").innerHTML = Math.round(battdata.FAC*100)/100 +" Hz";   //zwei Nachkommastellen
+			document.getElementById("line7").innerHTML = battdata.VAC +" V";
+	//      document.getElementById("line8").innerHTML = battdata.line8;
+			iDiff = battdata.PV - battdata.VB;
+			if (iDiff >= 0 ){
+				document.getElementById("line0").style.color = 'green';
+			} else {
+				document.getElementById("line0").style.color = 'red';
+			}
+			document.getElementById("line0").innerHTML = iDiff +" W";
+		}	
+		if(battdata.hasOwnProperty("ERR")){
+			document.getElementById("line9").innerHTML = battdata.ERR;
+			document.getElementById("line9").style.color = 'red';
+		}
+		else {
+			document.getElementById("line9").innerHTML = "";
+		}
+    }
+  };
+  xhr.send();
+  };
+  </script>
+</body>
+</html>

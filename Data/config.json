@@ -1,0 +1,10 @@
+{
+  "BOXNAME": "SmartBox",
+  "ANZOUTPUTS": "0",
+  "TYP": "1",
+  "BATTIP": "192.168.178.55",
+  "PORT": "80",
+  "CMD": "GET /api/v2/status HTTP/1.1",
+  "FILTERTIME": "1",
+  "DEBUG": "1"
+}

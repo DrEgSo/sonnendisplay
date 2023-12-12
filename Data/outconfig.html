@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang=de-DE>
+
+<head>
+ <meta content="text/html, text/css, text/javascript, text/xml"; charset="utf-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+ <meta http-equiv="refresh" content="180; URL=/index.html">
+ <title> Smarte Schalter für Hausbatterien </title>
+    <style>
+        a{
+            font-size: 20px;
+          }
+        * {
+            box-sizing: border-box;
+        }
+        hr {
+            width: 100%;
+            height: 0.1em;
+            margin: 0 auto;
+        }
+        body {
+            font-family: Arial;
+            padding: 10px;
+            background: #f1f1f1;
+        }
+		.eingabe {
+			background: #ffffff;
+			padding: 12px 12px;
+			margin: 0;
+		}
+        
+        .header {
+            padding: 2px;
+            text-align: center;
+            background: white;
+        }
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+        .topnav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .time {
+            background-color: #baa;
+            width: 100%;
+            padding: 5px;
+        }
+        .footer {
+            text-align: center;
+            background: #ddd;
+            margin-top: 20px;
+        }
+        .table {
+          width: 100%;
+          background-color: #fff0f0;
+        }
+		.button {
+			font-size: 24px;
+			padding: 20px 30px;
+			text-align: center;
+			background-color: white;
+			border: 3px solid #555555;
+			margin: 4px;
+		}
+    </style>
+</head>
+
+<body onload="pageInit();">
+    <div class="header" >
+        <h2><div id="headername">SoSmartSwitch</div></h2>
+		<h5> nach 3 Minuten gehts automatisch zurück zur Startseite </h5>
+    </div>
+    <div class="topnav">
+        <a href="index.html"><- Zurück</a>
+        <a href="#" style="float:right"><div id="time"></div></a>
+    </div>
+	<h1><button class="button" id="A-" onclick="BnrMinus();">-</button><span class="eingabe" id="ANr">1</span> <button class="button" id ="A+" onclick="BnrPlus();">+</button> </h1>
+	<ul>
+		<form action="/outconfigmodify" method="post">	
+		Ausgangsbezeichnung<input type="text" size="32" id="name" name="name" value="Ausgang" > <br><br>
+		Typ<select name="typ" id="typ" >
+		<option value="1" >GPIO</option>
+		<option value="2" selected>TASMOTA</option>
+		<option value="3">TASMOTA_POWER</option>
+		<option value="4">GO_E_CHARGER</option>
+		<option value="5">-</option>
+		</select>
+		<div id="ipbez">IP-Adresse</div>
+		<input type="text" size="15" id="ip" name="ip" value="192.168.178.xxx" >
+		<label for="pin"><div id="pinbez">Ausgangsnummer</div></label>
+		<input type="number" id="pin" name="pin" min="0" max="48" step="1" size="2" value="1" ><br> <br>
+		Zustand nach dem Einschalten<select name="pos" id="pos" >
+		<option value="0" >OFF</option>
+		<option value="1">ON</option>
+		<option value="2" selected>DC</option>
+		</select> <br> <br>
+
+		<fieldset>
+		<legend>Betriebsart auswählen:</legend>
+		<div>
+		  <select name="ba" id="ba" >
+		  <option value="0" selected>Inaktiv</option>
+		  <option value="1">Manuell</option>
+		  <option value="2">Automatik</option>
+		  </select>
+		</div>
+		<div>
+		  <label for="ref">Bezugsgröße fürs Schalten</label>
+		</div>
+		<div>
+		  <select name="ref" id="ref" >
+		  <option value="0" selected>Überschuss</option>
+		  <option value="1">Netzeinspeisung</option>
+		  </select>
+		</div>
+		<div>
+		  <label for="pwr_on">Grenze fürs Einschalten</label>
+		</div>
+		<div>
+		<input type="number" id="pwr_on" name="pwr_on"
+		   size="6" min="0" max="20000" step="10" value="1000" > Watt
+		</div>
+		<div>
+		  <label for="pwr_off">Grenze fürs Abschalten</label>
+		</div>
+		<div>
+		<input type="number" id="pwr_off" name="pwr_off"
+		   size="6" min="-5000" max="20000" step="10" value="0" > Watt
+		</div>
+		<div>
+		  <label for="ladung">Mindestfüllstand der Batterie</label>
+		</div>
+		<div>
+		<input type="number" id="ladung" name="ladung"
+		   size="3" min="0" max="100" step="5" value="0" > Prozent
+		</div>
+
+		</fieldset>
+		<fieldset>
+		<div>
+		  <label for="prio">Priorität (1=hoch)</label>
+		</div>
+		<div>
+		  <select name="prio" id="prio" >
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  </select>
+		</div>
+		<div>
+		  <label for="mintime">Mindesteinschaltdauer</label>
+		</div>
+		<div>
+		<input type="number" id="mintime" name="mintime"
+		   size="3" min="0" max="360" step="1" value="0" > Minuten
+		</div>
+		<div>
+		  <label for="offtime">Ausschaltverzögerung</label>
+		</div>
+		<div>
+		<input type="number" id="offtime" name="offtime"
+		   size="3" min="0" max="360" step="1" value="0" > Minuten
+		</div>
+		
+		</fieldset>
+		<button name="submit" id="Speichern" value="Speichern">Speichern</button>
+	</ul>
+	</form>
+</body>
+
+<script type="text/javascript">
+
+  var anzoutputs = 1;
+  var aktoutputnr = 1;
+  
+  function BnrMinus()
+  {
+	if(aktoutputnr > 1) {
+		aktoutputnr = aktoutputnr - 1;
+	}
+	document.getElementById("ANr").innerHTML=aktoutputnr;
+	getOutputConfig(aktoutputnr);
+  }	
+  
+  function BnrPlus()
+  {
+	if(aktoutputnr < anzoutputs) {
+		aktoutputnr = aktoutputnr + 1;
+	}
+	document.getElementById("ANr").innerHTML=aktoutputnr;
+	getOutputConfig(aktoutputnr);
+  }	
+
+  
+  //-------------einmal nach dem Laden der Seite
+  function pageInit(){
+	getConfig();		// um den Namen der Box und Anzahl der Ausgänge zu lesen
+  	getOutputConfig(aktoutputnr);
+	pageUpdate();
+  }
+  
+  setInterval(pageUpdate, 2000);
+  
+  function pageUpdate() {
+     var today = new Date();
+     var h = today.getHours();
+     var m = today.getMinutes();
+     var s = today.getSeconds();
+     m = formatTime(m);
+     s = formatTime(s);
+     document.getElementById('time').innerHTML =
+     h + ":" + m + ":" + s;
+	 if(document.getElementById('typ').value == 1){
+		document.getElementById('ip').style.display="none";
+		document.getElementById('ipbez').style.display="none";
+		document.getElementById('pinbez').innerHTML="Pinnummer";
+	 }
+	 else {
+		if(document.getElementById('typ').value == 2 || document.getElementById('typ').value == 3){
+			document.getElementById('pinbez').innerHTML="Ausgangsnummer";
+		}
+		if(document.getElementById('typ').value == 4 ){
+			document.getElementById('pinbez').innerHTML="Anzahlphasen";
+			if (document.getElementById('pin').value == 2 ){
+				document.getElementById('pin').value=1;
+			}
+			if (document.getElementById('pin').value > 3 ){
+				document.getElementById('pin').value=3;
+			}
+		}
+		document.getElementById('ip').style.display="inline";
+		document.getElementById('ipbez').style.display="inline";
+	 }
+  };
+      
+  function formatTime(i) {
+   if (i < 10) {i = "0" + i};
+   return i;
+  };
+  
+  
+  function getConfig(){
+	var xhr = new XMLHttpRequest();
+	var url_config = '/getconfig';   
+	
+	xhr.open("GET", url_config, true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var webinfo = JSON.parse(this.responseText);
+			document.getElementById("headername").innerHTML=webinfo.BOXNAME;
+			anzoutputs=webinfo.ANZOUTPUTS;
+		}
+	};
+	xhr.send();
+  };
+
+
+  function getOutputConfig(i){
+	var xhr = new XMLHttpRequest();
+	var url_outputConfig = '/outputconfig?XNR='+i;   
+	xhr.open("GET", url_outputConfig, true);
+
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var odat = JSON.parse(this.responseText);
+
+			document.getElementById("name").value=odat.name;
+			document.getElementById("typ").value=odat.typ;
+			document.getElementById("ip").value = odat.ip;
+			document.getElementById("pin").value=odat.pin;
+			document.getElementById("pos").value=odat.pos;
+			
+			document.getElementById("ba").value = odat.modus;
+			document.getElementById("ref").value= odat.ref;
+			document.getElementById("pwr_on").value = odat.pwron;
+			document.getElementById("pwr_off").value = odat.pwroff;
+			document.getElementById("ladung").value = odat.minbatt;
+			document.getElementById("prio").value = odat.prio;
+			document.getElementById("mintime").value = odat.mintime;
+			document.getElementById("offtime").value = odat.offtime;
+		}
+	};
+	xhr.send();
+  };
+
+</script>
+</body>
+</html>

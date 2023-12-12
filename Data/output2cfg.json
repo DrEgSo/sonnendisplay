@@ -1,0 +1,14 @@
+{
+  "name": "Wallbox",
+  "typ": "3",
+  "ip": "192.168.178.85",
+  "pin": "1",
+  "pos": "2",
+  "modus": "1",
+  "ref":"0",
+  "pwron": "100",
+  "pwroff": "0",
+  "minbatt": "50",
+  "prio": "2",
+  "mintime": "1"
+}

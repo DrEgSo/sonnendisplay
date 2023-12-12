@@ -1,0 +1,14 @@
+{
+  "name": "Powerplug",
+  "typ": "3",
+  "ip": "192.168.178.82",
+  "pin": "1",
+  "pos": "2",
+  "modus": "0",
+  "ref":"0",
+  "pwron": "1500",
+  "pwroff": "100",
+  "minbatt": "50",
+  "prio": "1",
+  "mintime": "1"
+}
